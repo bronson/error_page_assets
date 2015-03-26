@@ -13,9 +13,10 @@ namespace :assets do
     desc 'Copies the newest error pages into /public'
     task :error_pages do
       pattern = Rails.root.join('public', 'assets', "[0-9][0-9][0-9]*.html")
-      Dir[pattern].group_by { |s| s[0..2] }.each do |_, group|
+      groups = Dir[pattern].group_by { |s| File.basename(s)[0..2] }
+      groups.sort_by { |base,_| base }.each do |base, group|
         latest = group.sort_by { |f| File.mtime(f) }.last
-        FileUtils.cp latest, Rails.root.join('public', "#{page}.html")
+        FileUtils.cp latest, Rails.root.join('public', "#{base}.html")
       end
     end
   end
