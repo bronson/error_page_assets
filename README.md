@@ -1,14 +1,14 @@
 # Error Page Assets
 
-Let the asset pipeline generate your static error pages.
+Generate your static error pages with the asset pipeline.
 
-This gem lets you include Sprockets-generated CSS and JS files,
-complete with cache-busting digests, in `public/404.html` and friends.
+This gem lets you include Sprockets-generated CSS and JS files --
+complete with cache-busting digests -- in `public/404.html` and friends.
 You can even use layouts.
+No monkeypatching, no Rails engines, no routing, just idiomatic asset pipeline code.
 
-No monkeypatching, no Rails engines, no routing, just idiomatic code.
-The asset pipeline will generate static files so your
-web server shows your custom error pages even when your app is down hard.
+`rake assets:precompile` generates static files so your webserver will respond
+even when your application is down hard.
 
 
 ## Installation
@@ -34,6 +34,8 @@ In `config/application.rb`:
 config.assets.precompile += %w[404.html 422.html 500.html]
 ```
 
+That's it!
+
 
 ## Usage
 
@@ -41,17 +43,13 @@ Whenever assets are precompiled (i.e. during each deploy),
 your error pages will be generated and saved in `/public`.
 
 ```sh
-# (public/404.html doesn't exist)
-rails assets:precompile
-# (public/404.html is your newest code)
+$ rails assets:precompile
+copy public/assets/404-1c763a81450.html to public/404.html
 ```
-
-Your error pages are automatically generated along with the
-rest of your assets each time you deploy.
 
 ### Rails Helpers
 
-Now you can update your error pages to use Rails helpers:
+Here's an example of using Rails helpers:
 
 ```erb
 old:
@@ -76,6 +74,7 @@ static error pages to use layouts too, use the
 * Do we still need to use digest:true?
 * Use an initializer to automatically add error pages to the sprockets config?
 * Rails generator to move your error pages?
+* I haven't bothered with `I18n.available_locales`/`404.es.html`.  If you'd like localization, please file an issue.
 
 
 ## Alternatives
@@ -91,9 +90,6 @@ Pain-free MIT.
 
 
 ## Contributing
-
-My app isn't localized so I haven't bothered with `I18n.available_locales`.
-If you want localization, please file an issue.
 
 To make this gem less imperfect, please submit your issues and patches on
 [GitHub](https://github.com/bronson/error_page_assets/).
