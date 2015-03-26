@@ -28,8 +28,8 @@ describe 'assets:precompile:error_pages' do
   end
 
   it "clobbers the error pages" do
-    expect(FileUtils).to receive(:rm).with('spec/public/404.html')
-    expect(FileUtils).to receive(:rm).with('spec/public/500.html')
+    expect(FileUtils).to receive(:rm_f).with('spec/public/404.html')
+    expect(FileUtils).to receive(:rm_f).with('spec/public/500.html')
     Rake.application['assets:clobber'].invoke
   end
 end
