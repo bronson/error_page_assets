@@ -38,12 +38,12 @@ config.assets.precompile += %w[404.html 422.html 500.html]
 ## Usage
 
 Whenever assets are precompiled (i.e. during each deploy),
-your error pages will be generated and dropped into `/public`.
+your error pages will be generated and saved in `/public`.
 
 ```sh
-# public/404.html doesn't exist
+# (public/404.html doesn't exist)
 rails assets:precompile
-# public/404.html exists and includes your most recent code
+# (public/404.html is your newest code)
 ```
 
 Your error pages are automatically generated along with the

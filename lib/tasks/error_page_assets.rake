@@ -8,27 +8,43 @@ Rake::Task['assets:precompile'].enhance do
   Rake::Task['assets:precompile:error_pages'].invoke
 end
 
-namespace :assets do
-  namespace :precompile do
-    def log msg
-      # try to log like Sprockets even though their stuff is all private
-      STDERR.puts msg
-      Rails.logger.info(msg) if Rails.respond_to?(:logger)
-    end
+Rake::Task['assets:clobber'].enhance do
+  Rake::Task['assets:clobber:error_pages'].invoke
+end
 
-    def copy_error_files
-      pattern = Rails.root.join('public', 'assets', "[0-9][0-9][0-9]*.html")
-      groups = Dir[pattern].group_by { |s| File.basename(s)[0..2] }
-      groups.sort_by { |base,_| base }.each do |base, group|
-        latest = group.sort_by { |f| File.mtime(f) }.last
-        log "copy #{latest} to public/#{base}.html"
-        FileUtils.cp latest, Rails.root.join('public', "#{base}.html")
+
+namespace :assets do
+  def log msg
+    # try to log like Sprockets even though their stuff is all private
+    STDERR.puts msg
+    Rails.logger.info(msg) if Rails.respond_to?(:logger)
+  end
+
+  def process_error_files
+    pattern = Rails.root.join('public', 'assets', "[0-9][0-9][0-9]*.html")
+    groups = Dir[pattern].group_by { |s| File.basename(s)[0..2] }
+    groups.sort_by { |base,_| base }.each do |base, group|
+      src = group.sort_by { |f| File.mtime(f) }.last
+      dst = Rails.root.join('public', "#{base}.html")
+      yield src, dst
+    end
+  end
+
+  namespace :precompile do
+    task :error_pages do
+      process_error_files do |src,dst|
+        log "copy #{src} to #{dst}"
+        FileUtils.cp src, dst
       end
     end
+  end
 
-    desc 'Copies the newest error pages into /public'
+  namespace :clobber do
     task :error_pages do
-      copy_error_files
+      process_error_files do |src,dst|
+        log "clobber #{dst}"
+        FileUtils.rm dst
+      end
     end
   end
 end
