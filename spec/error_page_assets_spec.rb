@@ -22,6 +22,9 @@ describe 'assets:precompile:error_pages' do
     expect(FileUtils).to receive(:cp).with('spec/public/assets/404-digestnew.html', 'spec/public/404.html')
     expect(FileUtils).to receive(:cp).with('spec/public/assets/500.html', 'spec/public/500.html')
 
+    # suppress our logging while testing
+    expect(STDERR).to receive(:puts).twice
+
     Rake.application['assets:precompile:error_pages'].invoke
   end
 end
