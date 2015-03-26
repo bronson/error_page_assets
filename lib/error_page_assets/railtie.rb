@@ -1,4 +1,4 @@
-require 'error_page_Assets'
+require 'error_page_assets'
 require 'rails'
 
 module ErrorPageAssets
