@@ -19,11 +19,13 @@ namespace :assets do
   end
 
   def process_error_files
-    pattern = Rails.root.join('public', 'assets', "[0-9][0-9][0-9]*.html")
+    config = Rails.configuration
+    pattern = File.join(config.paths['public'].first, config.assets.prefix, "[0-9][0-9][0-9]*.html")
+
     groups = Dir[pattern].group_by { |s| File.basename(s)[0..2] }
     groups.sort_by { |base,_| base }.each do |base, group|
       src = group.sort_by { |f| File.mtime(f) }.last
-      dst = Rails.root.join('public', "#{base}.html")
+      dst = Rails.public_path.join("#{base}.html").to_s
       yield src, dst
     end
   end

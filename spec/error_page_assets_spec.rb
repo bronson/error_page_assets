@@ -10,7 +10,9 @@ describe 'assets:precompile:error_pages' do
   before do
     # allow rake task to call Rails.root.join
     stub_const('Rails', Class.new)
-    allow(Rails).to receive_message_chain(:root, :join) { |*args| File.join('spec', *args) }
+    allow(Rails).to receive_message_chain(:root, :join) { |*args| Pathname.new(File.join('spec', *args)) }
+    allow(Rails).to receive_message_chain(:public_path) { Rails.root.join('public') }
+    allow(Rails).to receive(:configuration).and_return(configuration)
 
     # ensure the rake task uses the most recent asset file
     expect(File).to receive(:mtime).with('spec/public/assets/404-digestnew.html').and_return(Time.now)
@@ -19,6 +21,13 @@ describe 'assets:precompile:error_pages' do
 
     # suppress our logging while testing
     expect(STDERR).to receive(:puts).twice
+  end
+
+  let(:configuration) do
+    double('configuration').tap do |config|
+      allow(config).to receive_message_chain(:assets, :prefix).and_return('/assets')
+      allow(config).to receive_message_chain(:paths).and_return('public' => [Rails.public_path.to_s])
+    end
   end
 
   it "copies the error pages" do
