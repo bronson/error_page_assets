@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["brons_errpage@rinspin.com"]
   spec.summary       = "Uses the asset pipeline to generate your static error pages."
   # spec.description   = "Uses the asset pipeline to generate your static error pages."
-  spec.homepage      = "http://github.com/bronson/static_error_pages"
+  spec.homepage      = "https://github.com/bronson/error_page_assets"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
